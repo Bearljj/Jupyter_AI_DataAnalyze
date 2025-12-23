@@ -1,0 +1,98 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_orig
+*-checkpoint.ipynb
+
+# 数据文件
+# 排除所有大数据文件
+data/raw/*.parquet
+data/raw/*.csv
+data/raw/*.xlsx
+data/processed/*.parquet
+data/processed/*.csv
+data/external/*.parquet
+data/interim/*.parquet
+
+# 但保留示例数据
+!data/raw/example*.parquet
+!data/processed/sample*.parquet
+!data/*/README.md
+
+# 分析输出
+outputs/**/*.html
+outputs/**/*.png
+outputs/**/*.pdf
+notebooks/02_analysis/*.html
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# 操作系统
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# 日志
+*.log
+logs/
+
+# 临时文件
+*.tmp
+*.bak
+~*
+.~*
+
+# 测试
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# 文档构建
+docs/_build/
+site/
+
+# 个人笔记（如果有）
+NOTES.md
+TODO.md
+.personal/

@@ -1,0 +1,59 @@
+[project]
+name = "jupyter-ai-dataanalyze"
+version = "1.0.0"
+description = "AI-Assisted Data Analysis Framework with Jupyter Lab"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # 核心数据处理
+    "polars>=1.36.1",
+    "pyarrow>=22.0.0",
+    # 可视化
+    "plotly>=6.5.0",
+    "kaleido>=0.2.1",  # Plotly 静态导出
+    # Jupyter
+    "jupyterlab>=4.5.1",
+    "ipywidgets>=8.1.8",
+    "jupyterlab-git>=0.50.0",
+    "nbformat>=5.10.4",
+    "papermill>=2.6.0",  # Notebook 自动化执行
+    # 数据处理增强
+    "openpyxl>=3.1.5",  # Excel 支持
+    "xlrd>=2.0.1",
+    # 工具库
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.1",
+    "click>=8.1.7",  # CLI 工具
+    # 缓存和性能
+    "joblib>=1.4.2",
+    "diskcache>=5.6.3",
+    "numpy>=2.4.0",
+    "pandas>=2.3.3",
+    "tabulate>=0.9.0",
+    "panel>=1.8.4",
+    "bokeh>=3.8.1",
+    "param>=2.3.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.3",
+    "black>=24.10.0",
+    "ruff>=0.7.4",
+    "ipython>=8.29.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["config", "src"]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
