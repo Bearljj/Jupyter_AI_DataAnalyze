@@ -10,7 +10,22 @@ print()
 # 1. 数据结构
 print("## 📊 数据结构")
 print()
-print(session.get_ai_context())
+
+# 检查 session 是否存在
+try:
+    if 'session' in dir():
+        print(session.get_ai_context())
+    else:
+        print("⚠️ 警告: session 未初始化")
+        print("请先运行 Step 2 加载数据")
+        print()
+        print("提示数据结构:")
+        print("- df_xxx: 已加载的 DataFrame")
+        print("- 使用 session.summary() 查看详情")
+except Exception as e:
+    print(f"⚠️ 无法获取数据上下文: {e}")
+    print("请确保已运行 Step 2 加载数据")
+
 print()
 
 print("=" * 80)
