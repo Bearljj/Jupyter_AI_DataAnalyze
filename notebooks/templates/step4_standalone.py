@@ -29,6 +29,78 @@ except Exception as e:
 print()
 
 print("=" * 80)
+print("## 🎯 工作流程（重要！请严格遵守）")
+print("=" * 80)
+print()
+
+print("""
+📌 **第一步：理解需求，不要急着写代码！**
+
+在生成任何代码之前，你必须：
+
+1. ✅ **仔细阅读用户需求**
+   - 理解用户想分析什么
+   - 确认需要什么样的可视化
+   - 明确数据的聚合方式
+
+2. ✅ **向用户确认理解**
+   用自然语言回复：
+   \"我理解你的需求是：
+   - [总结需求]
+   - [确认分析逻辑]
+   - [确认可视化类型]
+   
+   请确认我的理解是否正确？\"
+
+3. ✅ **等待用户明确指令**
+   只有在用户回复 \"是的，开始吧\" 或类似明确指令后，才开始写代码
+
+4. ❌ **不要上来就写代码**
+   这会浪费 token，而且可能理解错需求
+
+---
+
+📌 **第二步：处理导入语句**
+
+⚠️ **重要：你需要自己添加必要的 import！**
+
+在生成的代码开头（update_dashboard 函数之前），必须包含：
+
+```python
+# 必需的导入（根据实际使用情况添加）
+import plotly.express as px
+import plotly.graph_objects as go
+import polars as pl
+import panel as pn
+from datetime import datetime, timedelta
+```
+
+**为什么？**
+- Cell 1 只有基础导入
+- 你的分析代码可能需要额外的库
+- 不要假设所有库都已导入
+
+**检查清单：**
+□ plotly.express (如果用 px.bar, px.line 等)
+□ plotly.graph_objects (如果用 go.Figure)
+□ polars as pl (如果直接用 pl.col, pl.when 等)
+□ datetime/timedelta (如果处理日期)
+
+---
+
+📌 **第三步：询问确认后再优化**
+
+生成代码后：
+1. 先给出初版代码
+2. 等用户测试
+3. 根据反馈再优化
+4. 不要一次性给出多个版本
+
+---
+
+""")
+
+print("=" * 80)
 print("## 📚 Panel Dashboard 完整使用指南")
 print("=" * 80)
 print()
@@ -156,16 +228,89 @@ dashboard = PanelDashboardBuilder.from_data(
 
 完整代码模板
 
-**⚠️ 注意：这只是完整示例，实际你只需要生成更新函数部分！**
+**⚠️ 重要说明：**
+1. 用户的 notebook 已经有基础初始化（Cell 1）
+2. **但你需要自己添加必要的 import！**
+3. 只生成更新函数部分（不要重复创建 dashboard）
 
 ```python
 # ========================================
-# 以下代码仅供参考（用户的 notebook 已有这些）
+# Step 7: 生成分析代码
 # ========================================
-# from IPython.display import HTML, display
-# import panel as pn
-# import polars as pl
-# import plotly.express as px
+
+# 1️⃣ 导入必要的库（根据实际需要添加！）
+import plotly.express as px
+import plotly.graph_objects as go  # 如果需要
+import polars as pl
+# from datetime import datetime, timedelta  # 如果需要
+
+# 2️⃣ 定义更新函数
+@pn.depends(*dashboard.widgets.values())
+def update_dashboard(*args):
+    \"\"\"
+    根据控件值更新仪表盘
+    
+    Args:
+        *args: 控件值变化触发的参数
+    
+    Returns:
+        plotly figure 对象
+    \"\"\"
+    # 第 1 步：获取所有控件的值
+    values = {name: widget.value for name, widget in dashboard.widgets.items()}
+    
+    # 第 2 步：获取聚合维度（关键！）
+    group_col = values.get('_aggregation_dimension', '业务险种')
+    
+    # 第 3 步：构建过滤条件
+    filters = []
+    for dim, val in values.items():
+        # ⚠️ 必须跳过聚合维度控件！
+        if dim == '_aggregation_dimension':
+            continue
+        
+        if isinstance(val, list):
+            if '全选' not in val:
+                filters.append(pl.col(dim).is_in(val))
+        else:
+            if val != '全选':
+                filters.append(pl.col(dim) == val)
+    
+    # 第 4 步：应用过滤
+    filtered = df_df  # 使用实际的数据变量名
+    for f in filters:
+        filtered = filtered.filter(f)
+    
+    # 第 5 步：使用 group_col 进行聚合
+    result = filtered.group_by(group_col).agg([
+        pl.col('总保费').sum().alias('总保费'),
+        pl.len().alias('保单数')
+    ]).sort('总保费', descending=True)
+    
+    # 第 6 步：创建图表（使用 group_col）
+    fig = px.bar(
+        result.to_pandas(),
+        x=group_col,  # ← 使用 group_col
+        y='总保费',
+        title=f'{group_col}保费分析',  # ← 使用 group_col
+        labels={group_col: group_col, '总保费': '总保费（元）'}
+    )
+    
+    # 第 7 步：配置图表
+    fig.update_layout(
+        autosize=True,
+        height=600,
+        font=dict(family=\"Microsoft YaHei, SimHei, Arial\")  # 中文字体
+    )
+    
+    return fig
+
+# 3️⃣ 绑定更新函数
+dashboard.set_update_function(update_dashboard)
+
+# 4️⃣ 显示仪表盘
+dashboard.show()
+```
 # from src.dashboard import PanelDashboardBuilder
 # from src.utils import print_markdown_table
 # 
@@ -239,25 +384,33 @@ dashboard.show()
 
 ✅ 检查清单（生成代码后必须检查）
 
-第 0 步：检查是否重复定义
+第 0 步：检查是否有必要的导入
+□ 代码开头有 `import plotly.express as px` (如果用 px.bar/line 等)
+□ 代码开头有 `import polars as pl` (如果用 pl.col/pl.when 等)
+□ 代码开头有 `import plotly.graph_objects as go` (如果用 go.Figure)
+□ 不要遗漏任何需要的 import！
+
+第 1 步：检查是否重复定义
 □ 代码中没有 `dashboard = PanelDashboardBuilder.from_data(...)` 
 □ 代码中没有 `from IPython.display import HTML, display`
 □ 代码中没有 `pn.extension()`
-□ 代码只包含：update_dashboard 函数 + set_update_function + show
+□ 代码只包含：import语句 + update_dashboard 函数 + set_update_function + show
 
-第 1 步：检查函数开头
+
+第 2 步：检查函数开头
 □ 有 group_col = values.get('_aggregation_dimension') 吗？
 
-第 2 步：检查过滤循环
+第 3 步：检查过滤循环
 □ 有 if dim == '_aggregation_dimension': continue 吗？
 
-第 3 步：检查所有用到维度的地方
+第 4 步：检查所有用到维度的地方
 □ group_by('机构名称') → 改为 group_by(group_col)
 □ x='业务年度' → 改为 x=group_col
 □ title='险种分析' → 改为 title=f'{group_col}分析'
 □ select(['机构名称', ...]) → 改为 select([group_col, ...])
 
-第 4 步：快速验证
+第 5 步：快速验证
+□ 代码开头有必要的 import
 □ 函数开头定义了 group_col
 □ 过滤循环跳过了 _aggregation_dimension
 □ group_by() 使用 group_col

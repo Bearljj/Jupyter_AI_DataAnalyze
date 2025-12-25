@@ -399,6 +399,46 @@ cells = {
             "print(\"\\n🎉 分析完成！\")\n"
         ]
     },
+    "step8_markdown": {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "## 📥 Step 8: 导出 PDF 报告\n",
+            "\n",
+            "此步骤会自动捕获当前仪表盘的所有图表和过滤配置，生成一份专业美观的 PDF 报告。报告将保存在 `outputs/reports/` 目录下。"
+        ]
+    },
+    "step8_code": {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": [
+            "from src.exporter import ReportExporter\n",
+            "import os\n",
+            "from IPython.display import FileLink, display\n",
+            "\n",
+            "# 1. 自动检测环境中的 dashboard 对象\n",
+            "target_obj = globals().get('dashboard')\n",
+            "\n",
+            "if target_obj:\n",
+            "    # 2. 执行导出\n",
+            "    # 你可以修改报告标题和文件名\n",
+            "    report_path = ReportExporter.export_to_pdf(\n",
+            "        dashboard=target_obj,\n",
+            "        title=\"数据分析深度报告\",\n",
+            "        author=\"Harold AI 分析助手\",\n",
+            "        filename=\"analysis_report\"\n",
+            "    )\n",
+            "    \n",
+            "    # 3. 显示结果\n",
+            "    if report_path and os.path.exists(report_path):\n",
+            "        print(\"\\n✅ 报告生成成功！\")\n",
+            "        display(FileLink(report_path))\n",
+            "else:\n",
+            "    print(\"❌ 错误: 未找到 'dashboard' 对象，请确保 Step 6 & 7 已执行并正常显示。\")"
+        ]
+    }
 }
 
 # 添加所有 cells 到 notebook
@@ -411,7 +451,7 @@ cell_order = [
     "step5_md", "step5_code",
     "step6_md", "step6_code",
     "step7_md", "step7_code",
-    "step8_md", "step8_code",
+    "step8_markdown", "step8_code", # Updated to new step 8
 ]
 
 for cell_name in cell_order:
