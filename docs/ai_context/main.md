@@ -1,8 +1,8 @@
-# Jupyter AI DataAnalyze - AI Context (Updated 2025-12-21)
+# Jupyter AI DataAnalyze - AI Context (Updated 2025-12-31)
 
-**版本：** 2.1  
-**最后更新：** 2025-12-21  
-**重要更新：** 仪表盘自动化 + Markdown 输出规范 + 工作流澄清
+**版本：** 3.0  
+**最后更新：** 2025-12-31  
+**重要更新：** Level 3 物理隔离 (data_values) + API 安全契约 + 仪表盘自动化规范
 
 这是 Jupyter AI DataAnalyze 框架的核心 AI Context 文档。复制相关部分给 AI，帮助它理解框架并生成正确的代码。
 
