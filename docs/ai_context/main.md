@@ -344,9 +344,9 @@ dashboard = PanelDashboardBuilder.from_data(
 # ⚠️ 关键：必须使用 @pn.depends 装饰器
 @pn.depends(*dashboard.widgets.values())
 def update_dashboard(*args):  # 参数是 *args
-    # A. 获取控件值
-    values = {name: widget.value 
-              for name, widget in dashboard.widgets.items()}
+    # ✅ 推荐方式：直接通过 .data_values 获取所有数据维度控件的值
+    # 这将自动排除系统控件（如 _aggregation_dimension），并直接提供 {列名: 值}
+    values = dashboard.data_values
     
     # B. 动态过滤数据（处理"全选"）
     filters = []
@@ -362,8 +362,11 @@ def update_dashboard(*args):  # 参数是 *args
     for f in filters:
         filtered = filtered.filter(f)
     
+    # ⚡️ 获取当前选择的聚合维度（功能控件示例）
+    agg_dim = dashboard.widgets['_aggregation_dimension'].value
+    
     # C. 聚合分析
-    result = filtered.group_by('业务险种').agg([
+    result = filtered.group_by(agg_dim).agg([
         pl.col('总保费').sum().alias('保费'),
         pl.len().alias('保单数')
     ]).sort('保费', descending=True)
@@ -379,11 +382,11 @@ def update_dashboard(*args):  # 参数是 *args
         y_col = '保费'
     
     # E. Markdown 输出
-    print("## 分析结果\\n")
+    print(f"## 按 {agg_dim} 分析结果\n")
     print_markdown_table(result.head(10))
     
     # F. 图表（自适应宽度）
-    fig = px.bar(result.to_pandas(), x='业务险种', y=y_col)
+    fig = px.bar(result.to_pandas(), x=agg_dim, y=y_col)
     fig.update_layout(
         height=600,
         autosize=True,  # ← 自动占满宽度
@@ -401,11 +404,11 @@ dashboard.save("保费分析.html")
 ```
 
 **Panel 关键规则**：
-1. 使用 `@pn.depends(*dashboard.widgets.values())` 装饰器
-2. 函数参数是 `*args`（不是 controls 字典）
-3. 通过 `dashboard.widgets` 字典获取控件值
-4. 处理"全选"选项
-5. 图表设置 `autosize=True`
+1. **获取数据值**：✅ 必须使用 `dashboard.data_values` 来遍历维度过滤条件。
+2. **严禁遍历 `widgets`**：❌ 严禁直接遍历 `dashboard.widgets` 用于数据列过滤。因为 `widgets` 包含了 `_aggregation_dimension` 等系统功能控件，如果将其作为列名访问数据会导致崩溃。
+3. **系统控件访问**：如果需要获取聚合维度，请显式通过键值访问：`dashboard.widgets['_aggregation_dimension'].value`。
+4. **装饰器**：必须使用 `@pn.depends(*dashboard.widgets.values())`。
+5. **布局**：图表必须设置 `autosize=True`。
 
 ---
 

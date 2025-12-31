@@ -188,6 +188,23 @@ class PanelDashboardBuilder:
         print("=" * 80)
         print()
     
+    @property
+    def data_controls(self) -> Dict[str, Any]:
+        """
+        ✅ 仅获取对应数据维度的控件
+        自动排除以 '_' 开头的系统功能控件（如 _aggregation_dimension）。
+        AI 开发提示：在进行数据过滤逻辑开发时，请务必遍历此属性而非 .widgets。
+        """
+        return {k: v for k, v in self.widgets.items() if not k.startswith('_')}
+
+    @property
+    def data_values(self) -> Dict[str, Any]:
+        """
+        ✅ 获取数据维度控件的当前值字典 {字段名: 选中值}
+        AI 开发提示：这是最推荐的获取过滤值的方式，可直接用于多维过滤循环。
+        """
+        return {k: v.value for k, v in self.data_controls.items()}
+
     def set_update_function(self, func: Callable):
         """
         设置更新函数
@@ -198,10 +215,9 @@ class PanelDashboardBuilder:
         Examples:
             >>> @pn.depends(*dashboard.widgets.values())
             >>> def update(*args):
-            ...     # 获取控件值
-            ...     values = {name: widget.value 
-            ...               for name, widget in dashboard.widgets.items()}
-            ...     # 分析逻辑
+            ...     # ✅ 推荐方式：获取数据过滤值
+            ...     values = dashboard.data_values
+            ...     # 业务逻辑
             ...     return fig
             >>> 
             >>> dashboard.set_update_function(update)
