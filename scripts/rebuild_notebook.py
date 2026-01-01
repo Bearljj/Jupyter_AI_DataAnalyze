@@ -1,0 +1,203 @@
+import json
+
+notebook_path = '/Users/harold/working/Jupyter_AI_DataAnalyze/notebooks/templates/quick_start.ipynb'
+
+cells = [
+    {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "# 🚀 Quick Start - Panel Dashboard\n",
+            "\n",
+            "**最新版本**: Phase 3.0.2 - Developer Friendly (v3.0.2)  \n",
+            "**特性**: 开启自动重载 + 物理隔离 API + AI 自我叙述\n",
+            "\n",
+            "---\n",
+            "\n",
+            "## 📋 本 Notebook 的步骤\n",
+            "\n",
+            "1. **初始化环境** - 开启 autoreload + 加载框架\n",
+            "2. **加载数据** - 从 Parquet 文件加载\n",
+            "3. **生成 AI Prompt** - 包含 v3.0 物理隔离规范（复制给 AI）\n",
+            "4. **选择维度** - 选择分析维度\n",
+            "5. **创建仪表盘** - 自动生成布局\n",
+            "6. **生成分析代码** - 粘贴 AI 生成的逻辑\n",
+            "7. **导出 PDF 报告** - 自动提取备注生成文档\n"
+        ]
+    },
+    {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "## 📦 Step 1: 初始化环境\n",
+            "\n",
+            "开启 **Auto-Reload**（文件修改后自动生效，无需重启 Kernel）"
+        ]
+    },
+    {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": [
+            "from IPython.display import HTML, display\n",
+            "import polars as pl\n",
+            "import plotly.express as px\n",
+            "import panel as pn\n",
+            "from src.session import DataSession\n",
+            "from src.dashboard import PanelDashboardBuilder\n",
+            "from src.utils import print_markdown_table\n",
+            "import importlib\n",
+            "\n",
+            "# 🚀 开启自动重载：修改 src/*.py 代码后立即生效\n",
+            "%load_ext autoreload\n",
+            "%autoreload 2\n",
+            "\n",
+            "# 1. 移除宽度限制\n",
+            "display(HTML(\"<style>.jp-Notebook { --jp-notebook-max-width: 100% !important; }</style>\"))\n",
+            "pn.extension('plotly', sizing_mode='stretch_width')\n",
+            "\n",
+            "print(\"✅ 环境初始化完成 (Autoreload 已开启)\")\n",
+            "print(\"📚 框架版本: v3.0.2\")\n"
+        ]
+    },
+    {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "## 📂 Step 2: 加载数据"
+        ]
+    },
+    {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": [
+            "session = DataSession()\n",
+            "session.load(\"alldata\", alias=\"df\") \n",
+            "print(f\"✅ 数据已加载: {df_df.height:,} 行\")\n"
+        ]
+    },
+    {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "## 📋 Step 3: 生成 AI Prompt"
+        ]
+    },
+    {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": [
+            "import os\n",
+            "def find_project_root():\n",
+            "    current = os.path.abspath('.')\n",
+            "    while current != '/':\n",
+            "        if os.path.exists(os.path.join(current, 'src')): return current\n",
+            "        current = os.path.dirname(current)\n",
+            "    return os.path.abspath('.')\n",
+            "\n",
+            "step4_path = os.path.join(find_project_root(), 'notebooks/templates/step4_standalone.py')\n",
+            "if os.path.exists(step4_path): exec(open(step4_path).read())\n"
+        ]
+    },
+    {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "## 🎯 Step 4: 选择分析维度"
+        ]
+    },
+    {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": [
+            "selected_dimensions = ['业务年度', '业务险种']\n"
+        ]
+    },
+    {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "## 📊 Step 5: 创建仪表盘"
+        ]
+    },
+    {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": [
+            "dashboard = PanelDashboardBuilder.from_data(df_df, dimensions=selected_dimensions, title=\"📊 仪表盘 (v3.0.2)\")\n",
+            "\n",
+            "print(\"\\n📝 给 AI 的同步指令:\")\n",
+            "print(\"=\" * 80)\n",
+            "print(\"请严格遵守 v3.0.1 物理隔离与自我叙述规范。\")\n",
+            "print(\"使用 dashboard.data_values, 并在 docstring 中包含 [REPORT_METADATA] 块。\")\n",
+            "print(\"=\" * 80)\n"
+        ]
+    },
+    {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "## 🤖 Step 6: 粘贴 AI 逻辑"
+        ]
+    },
+    {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": [
+            "# 在此粘贴 AI 代码\n",
+            "print(\"⚠️ 粘贴代码后点击运行\")\n"
+        ]
+    },
+    {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "## 📥 Step 7: 一键生成 PDF 报告"
+        ]
+    },
+    {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": [
+            "import src.exporter\n",
+            "importlib.reload(src.exporter)\n",
+            "from src.exporter import ReportExporter\n",
+            "import os\n",
+            "from IPython.display import FileLink\n",
+            "\n",
+            "report_path = ReportExporter.export_to_pdf(\n",
+            "    dashboard=dashboard,\n",
+            "    title=\"AI 数据深度分析报告\"\n",
+            ")\n",
+            "if report_path: display(FileLink(report_path))\n"
+        ]
+    }
+]
+
+nb = {
+    "cells": cells,
+    "metadata": {
+        "kernelspec": {"display_name": "Python 3", "name": "python3"},
+        "language_info": {"name": "python", "version": "3.12.0"}
+    },
+    "nbformat": 4,
+    "nbformat_minor": 4
+}
+
+with open(notebook_path, 'w', encoding='utf-8') as f:
+    json.dump(nb, f, indent=2, ensure_ascii=False)
+
+print("✅ Template v3.0.2 rebuilt with Autoreload enabled.")

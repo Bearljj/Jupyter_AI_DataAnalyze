@@ -46,13 +46,14 @@ def create_from_template(analysis_name=None):
     print(f"   {output_path}")
     print(f"\n🚀 下一步:")
     print(f"   1. 在 Jupyter Lab 中打开: {output_path}")
-    print(f"   2. 按步骤运行 (Step 1-7)")
-    print(f"   3. 让 AI 生成分析代码（Step 6）")
-    print(f"   4. 导出 HTML (Step 7)")
+    print(f"   2. 依次运行所有 Cell (Step 1-7)")
+    print(f"   3. **重要**: 在 Step 4 获取针对 AI 的物理隔离 (v3.0) 开发指令")
+    print(f"   4. 在 Step 7 粘贴并运行 AI 生成的业务逻辑")
+    print(f"   5. 导出 HTML 或使用 Step 8 导出 PDF 报告")
     print(f"\n💡 提示:")
-    print(f"   - 模板保持干净，可反复使用")
-    print(f"   - 每个分析独立保存")
-    print(f"   - 可随时创建新分析")
+    print(f"   - 模板已升级至 v3.0 物理隔离规范")
+    print(f"   - 严禁遍历 .widgets，请使用 .data_values")
+    print(f"   - 每个分析独立保存，可随时创建新副本")
     
     return output_path
 

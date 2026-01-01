@@ -26,6 +26,7 @@ class PanelDashboardBuilder:
         self.widgets = {}
         self.update_function = None
         self.layout = None
+        self._output_pane = None # 存储输出面板的引用
         
         # 初始化 Panel 扩展
         pn.extension('plotly')
@@ -223,6 +224,17 @@ class PanelDashboardBuilder:
             >>> dashboard.set_update_function(update)
         """
         self.update_function = func
+        
+        # 如果已经有渲染好的输出面板，立即通知它更新函数引用
+        if self._output_pane is not None:
+            print("🔄 检测到活跃仪表盘，正在热重载分析逻辑...")
+            try:
+                # 重新构建输出面板的内容而不改变面板对象本身
+                self._output_pane.object = func
+                print("✅ 分析逻辑已热重载，请操作控件查看效果！")
+            except Exception as e:
+                print(f"⚠️ 热重载失败 (可能布局尚未渲染): {e}")
+                
         return self
     
     def build_layout(self):
@@ -239,8 +251,9 @@ class PanelDashboardBuilder:
             sizing_mode='stretch_width'
         )
         
-        # 输出区域
-        output = pn.panel(self.update_function, sizing_mode='stretch_width')
+        # 输出区域 (核心：保持对象引用以支持热更新)
+        self._output_pane = pn.panel(self.update_function, sizing_mode='stretch_width')
+        output = self._output_pane
         
         # 完整布局
         self.layout = pn.Column(
